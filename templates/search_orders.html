@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Orders</title>
+</head>
+<body>
+
+<h1>Orders:</h1>
+{% if list_of_all_orders %}
+    <h2>{{ list_of_all_orders.0.customer }}</h2>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Date</th>
+        </tr>
+        {% for order in list_of_all_orders %}
+            <tr>
+                <td>{{ order.product }}</td>
+                <td>{{ order.order_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Nothing...</p>
+{% endif %}
+</body>
+</html>
