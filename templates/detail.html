@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+{% block content %}
+    <h1>Ваша корзина:</h1>
+    <table class="cart">
+        <thead>
+        <tr>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Удалить</th>
+            <th>Цена/ед</th>
+            <th>Итого</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+            {% with product=item.product %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <form action="{% url "cart:cart_add" product.id %}" method="post">
+                            {{ item.update_quantity_form.quantity }}
+                            {{ item.update_quantity_form.override }}
+                            <input type="number" name="quantity" value="{{ item.quantity }}"
+                                   min="1" max="10" style="margin-left: 10px; width: 50px">
+                            <input type="hidden" name="update" value="true" style="margin-left: 10px">
+                            <input type="submit" value="Обновить">
+                            {% csrf_token %}
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url "cart:cart_remove" product.id %}" method="post">
+                            <input type="submit" value="Удалить">
+                            {% csrf_token %}
+                        </form>
+                    </td>
+                    <td>{{ product.price }} руб.</td>
+                    <td>{{ product.total_price }} руб.</td>
+                </tr>
+            {% endwith %}
+        {% endfor %}
+        <tr class="total">
+            <td colspan="5"> Итого</td>
+            <td style="font-weight: bold">{{ cart.get_total_price }} руб.</td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'product_list' %}">
+            <button type="button">Вернуться к товарам</button>
+        </a>
+        <a href="{% url 'orders:order_create' %}">
+            <button type="button">Оформить заказ</button>
+        </a>
+    </div>
+{% endblock %}
+</body>
+</html>

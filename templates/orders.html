@@ -1,35 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders</title>
+    <title>Все заказы</title>
 </head>
 <body>
-<form action="{% url 'search_orders' %}" method="GET">
-    <input name="q" type="text" placeholder="Введите имя или фамилию..." required>
-    <button type="submit">Найти</button>
-</form>
-    <h1>All Orders</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Order Date</th>
-                <th>Customer</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-            <tr>
-                <td>{{ order.order_id }}</td>
-                <td>{{ order.product }}</td>
-                <td>{{ order.order_date }}</td>
-                <td>{{ order.customer }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h1>Список всех заказов</h1>
+
+{% if orders %}
+    <ul>
+        {% for order in orders %}
+            <li>
+                <strong>Заказ №{{ order.order_id }}</strong> — {{ order.first_name }} {{ order.last_name }}
+                — {{ order.order_date }}
+                <ul>
+                    {% for item in order.items.all %}
+                        <li>{{ item.quantity }} шт. — {{ item.product.name }} — {{ item.price }} руб. за шт.</li>
+                    {% endfor %}
+                </ul>
+                <p><strong>Итого: {{ order.get_total_cost }} руб.</strong></p>
+            </li>
+
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Заказов пока нет.</p>
+{% endif %}
+
+<a href="/">Вернуться на главную</a>
 </body>
 </html>
